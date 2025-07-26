@@ -1,0 +1,59 @@
+* 命令行版 Hello World
+
+这是一个使用 Janet 编写的命令行 "Hello, World!" 程序.
+
+** 项目文件
+
+*** `project.janet`
+
+该文件为 `jpm` 定义了项目元数据和构建目标.
+
+#+BEGIN_SRC janet
+(declare-project
+  :name "helloworld-cli")
+
+(declare-executable
+  :name "helloworld-cli"
+  :entry "main.janet")
+#+END_SRC
+
+*** `main.janet`
+
+这是程序的主入口点.
+
+#+BEGIN_SRC janet
+(defn main
+  [& args]
+  (print "Hello, World!"))
+#+END_SRC
+
+** 开发流程
+
+*** 1. 编译 (构建)
+
+本项目没有外部依赖, 所以可以直接构建.
+
+#+BEGIN_SRC shell
+jpm build
+#+END_SRC
+
+这会生成一个名为 `helloworld-cli` 的可执行文件在 `build` 目录中.
+
+*** 2. 运行
+
+#+BEGIN_SRC shell
+./build/helloworld-cli
+#+END_SRC
+
+您应该会在终端看到 "Hello, World!" 的输出.
+
+*** 3. 调试
+
+调试 Janet 程序有几种方法:
+- *打印调试*: 在代码中插入 `(print ...)` 或 `(eprint ...)` 语句来输出变量或状态.
+- *直接运行脚本*: 使用 `janet main.janet` 命令来直接解释和运行脚本, 这可以快速测试脚本的逻辑.
+- *交互式运行*: 使用 `janet` 命令启动一个 REPL. 在 REPL 中, 你可以手动加载你的 `main.janet` 文件 `(dofile "main.janet")`, 然后调用 `(main)` 函数来测试它.
+
+*** 4. 发布
+
+编译步骤生成的可执行文件 (`build/helloworld-cli`) 就是最终的发布产物. 它是一个静态链接的文件, 可以被分发到与您编译环境相似的其他机器上运行, 无需安装 Janet.

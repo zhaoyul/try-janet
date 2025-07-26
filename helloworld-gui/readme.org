@@ -1,0 +1,80 @@
+* Jaylib (raylib) 版 Hello World
+
+这是一个使用 Janet 和 Jaylib (raylib 的绑定) 编写的图形化 "Hello, World!" 程序.
+
+** 项目文件
+
+*** `project.janet`
+
+该文件为 `jpm` 定义了项目元数据和构建目标. 它声明了对 `jaylib` 库的依赖.
+
+#+BEGIN_SRC janet
+(declare-project
+  :name "helloworld"
+  :dependencies ["https://github.com/janet-lang/jaylib.git"])
+
+(declare-executable
+  :name "helloworld"
+  :entry "main.janet")
+#+END_SRC
+
+*** `main.janet`
+
+这是程序的主入口点. 它会初始化一个窗口并显示 "Hello, World!".
+
+#+BEGIN_SRC janet
+(import jaylib :as jay)
+
+(def screen-width 800)
+(def screen-height 450)
+
+(defn main [& args]
+  (jay/init-window screen-width screen-height "Hello, Jaylib!")
+  (jay/set-target-fps 60)
+
+  (while (not (jay/window-should-close))
+    (jay/begin-drawing)
+    (jay/clear-background :ray-white)
+    (jay/draw-text "Hello, World!" 190 200 20 :light-gray)
+    (jay/end-drawing))
+
+  (jay/close-window))
+#+END_SRC
+
+** 开发流程
+
+*** 1. 安装依赖
+
+由于本项目依赖 `jaylib`, 我们需要先将它安装到本地的项目目录中. `-l` 标志告诉 `jpm` 将依赖项安装到 `./jpm_tree` 目录.
+
+#+BEGIN_SRC shell
+jpm -l deps
+#+END_SRC
+
+*** 2. 编译 (构建)
+
+安装依赖后, 我们可以编译项目. 同样, 我们使用 `-l` 标志来确保 `jpm` 能找到本地的依赖项.
+
+#+BEGIN_SRC shell
+jpm -l build
+#+END_SRC
+
+这会生成一个名为 `helloworld` 的可执行文件在 `build` 目录中.
+
+*** 3. 运行
+
+#+BEGIN_SRC shell
+./build/helloworld
+#+END_SRC
+
+*** 4. 调试
+
+调试 Janet 程序有几种方法:
+- *打印调试*: 在代码中插入 `(print ...)` 或 `(eprint ...)` 语句来输出变量或状态. 这是最简单直接的方法.
+- *交互式运行*: 使用 `jpm -l janet` 命令启动一个包含所有依赖项的 Janet REPL. 在 REPL 中, 你可以手动加载你的 `main.janet` 文件 `(dofile "main.janet")`, 然后逐个调用函数来测试它们.
+
+*** 5. 发布
+
+编译步骤生成的可执行文件 (`build/helloworld`) 就是最终的发布产物. 它是一个静态链接的文件, 理论上可以被分发到与您编译环境相似的其他机器上运行, 无需安装 Janet 或其他依赖.
+
+对于更复杂的应用, 您可能需要将图标, 图片, 音频等资源文件与可执行文件一起打包. 但对于这个简单的例子, 只需分发 `helloworld` 文件即可.
