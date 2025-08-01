@@ -1,11 +1,10 @@
 (import jaylib :as jay)
-(import string)
 
 (def screen-width 800)
 (def screen-height 450)
 
 (def glsl-version
-  (if (or (= (jay/get-platform) :platform-desktop) (= (jay/get-platform) :platform-linux))
+  (if (or (= (os/which) :platform-desktop) (= (os/which) :platform-linux))
     330
     100))
 
@@ -37,11 +36,14 @@
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
 
-    (jay/with-shader-mode shader
-      (jay/draw-circle (/ screen-width 2) (/ screen-height 2) 250.0 :orange))
+    (jay/begin-shader-mode shader)
+    (jay/draw-circle (/ screen-width 2) (/ screen-height 2) 250.0 :orange)
 
     (jay/draw-fps 10 10)
     (jay/end-drawing))
 
   (jay/unload-shader shader)
-  (jay/close-window)))
+  (jay/close-window))
+
+(comment (main)
+  )
