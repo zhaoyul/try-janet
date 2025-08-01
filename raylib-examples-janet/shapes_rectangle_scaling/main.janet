@@ -3,6 +3,12 @@
 (def screen-width 800)
 (def screen-height 450)
 
+(ffi/context nil)
+(ffi/defbind GetMouseDelta [:float :float] [])
+
+(ffi/defbind Fade [:u8 :u8 :u8 :u8] [color [:u8 :u8 :u8 :u8] alpha :float])
+
+
 (defn main [& args]
   (jay/init-window screen-width screen-height "raylib [shapes] example - rectangle scaling")
 
@@ -12,40 +18,45 @@
   (jay/set-target-fps 60)
 
   (while (not (jay/window-should-close))
-    # Update
-    (def mouse-pos (jay/get-mouse-position))
+         (def mouse-pos (jay/get-mouse-position))
 
-    (if (and (jay/check-collision-point-rec mouse-pos rec)
-             (not= mouse-scale-mode :scale))
-      (set mouse-scale-mode :move)
-      (set mouse-scale-mode :none))
+         (if (and (jay/check-collision-point-rec mouse-pos (values rec))
+                  (not= mouse-scale-mode :scale))
+             (set mouse-scale-mode :move)
+             (set mouse-scale-mode :none))
 
-    (when (jay/check-collision-point-rec mouse-pos @{:x (+ (rec :x) (rec :width) - 20)
-                                                     :y (+ (rec :y) (rec :height) - 20)
-                                                     :width 20 :height 20})
-      (set mouse-scale-mode :scale))
+         (when (jay/check-collision-point-rec mouse-pos
+                                              [(- (+ (rec :x) (rec :width)) 20)
+                                               (- (+ (rec :y) (rec :height)  20))
+                                               20  20])
+           (set mouse-scale-mode :scale))
 
-    (case mouse-scale-mode
-      :move (when (jay/is-mouse-button-down :left)
-              (update rec :x #(+ % ((jay/get-mouse-delta) :x)))
-              (update rec :y #(+ % ((jay/get-mouse-delta) :y))))
-      :scale (when (jay/is-mouse-button-down :left)
-               (update rec :width #(+ % ((jay/get-mouse-delta) :x)))
-               (update rec :height #(+ % ((jay/get-mouse-delta) :y)))))
+         (case mouse-scale-mode
+           :move (when (jay/mouse-button-down? :left)
+                   (update rec :x |(+ $ (get (GetMouseDelta) 0)))
+                   (update rec :y |(+ $ (get (GetMouseDelta) 1))))
+           :scale (when (jay/mouse-button-down? :left)
+                    (update rec :width |(+ $ (get (GetMouseDelta) 0)))
+                    (update rec :height |(+ $ (get (GetMouseDelta) 1)))))
 
-    # Draw
-    (jay/begin-drawing)
-    (jay/clear-background :ray-white)
+         # Draw
+         (jay/begin-drawing)
+         (jay/clear-background :ray-white)
 
-    (jay/draw-rectangle-rec rec (jay/fade :green 0.5))
-    (jay/draw-rectangle-lines-ex rec 2 :black)
+         (def green [25 25 0 0])
 
-    (when (= mouse-scale-mode :scale)
-      (jay/draw-rectangle-rec @{:x (+ (rec :x) (rec :width) - 20)
-                                :y (+ (rec :y) (rec :height) - 20)
-                                :width 20 :height 20} :red))
+         (jay/draw-rectangle-rec (values rec) (Fade green 0.5))
+         (jay/draw-rectangle-lines-ex (values rec) 2 :black)
 
-    (jay/draw-text "Scale rectangle with mouse" 10 10 20 :gray)
-    (jay/end-drawing))
+         (when (= mouse-scale-mode :scale)
+           (jay/draw-rectangle-rec [(- (+ (rec :x) (rec :width) 20))
+                                    (- (+ (rec :y) (rec :height) 20))
+                                    :width 20 :height 20] :red))
 
-  (jay/close-window)))
+         (jay/draw-text "Scale rectangle with mouse" 10 10 20 :gray)
+         (jay/end-drawing))
+
+  (jay/close-window))
+
+
+(main)
