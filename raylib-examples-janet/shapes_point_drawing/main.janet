@@ -11,10 +11,12 @@
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
 
-    (jay/draw-point (/ screen-width 2) (/ screen-height 2) :maroon)
+    (jay/draw-pixel (/ screen-width 2) (/ screen-height 2) :maroon)
 
     (jay/draw-text "This is a single pixel" (- (/ screen-width 2) 100) (+ (/ screen-height 2) 20) 20 :gray)
 
     (jay/end-drawing))
 
-  (jay/close-window)))
+  (jay/close-window))
+
+(main)
