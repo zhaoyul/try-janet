@@ -13,9 +13,9 @@
 
   (while (not (jay/window-should-close))
     # Update
-    (if (jay/is-mouse-button-down :left)
+    (if (jay/mouse-button-down? :left)
       (set start (jay/get-mouse-position))
-      (if (jay/is-mouse-button-down :right)
+      (if (jay/mouse-button-down? :right)
         (set end (jay/get-mouse-position))))
 
     # Draw
@@ -24,11 +24,15 @@
 
     (jay/draw-text "USE MOUSE LEFT-RIGHT BUTTONS to DEFINE START and END POINTS" 15 20 20 :gray)
 
-    (jay/draw-line-bezier start end 2.0 :red)
+    (jay/draw-line-bezier (values start) (values end) 2.0 :red)
 
-    (jay/draw-circle-v start 5 :blue)
-    (jay/draw-circle-v end 5 :blue)
+    (jay/draw-circle-v (values start) 5 :blue)
+    (jay/draw-circle-v (values end) 5 :blue)
 
     (jay/end-drawing))
 
-  (jay/close-window)))
+  (jay/close-window))
+
+(comment
+  (main)
+  )
