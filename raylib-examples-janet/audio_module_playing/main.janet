@@ -19,7 +19,7 @@
     # Update
     (jay/update-music-stream music)
 
-    (when (jay/is-key-pressed :space)
+    (when (jay/key-pressed? :space)
       (set pause (not pause))
       (if pause (jay/pause-music-stream music) (jay/resume-music-stream music)))
 
@@ -32,7 +32,7 @@
 
     (jay/draw-text "MUSIC SHOULD BE PLAYING!" 255 150 20 :light-gray)
     (jay/draw-rectangle 200 200 400 12 :light-gray)
-    (jay/draw-rectangle 200 200 (* time-played 400.0) 12 :maroon)
+    (jay/draw-rectangle 200 200 (math/round (* time-played 400.0)) 12 :maroon)
     (jay/draw-rectangle-lines 200 200 400 12 :gray)
 
     (jay/draw-text "PRESS SPACE TO PAUSE/RESUME MUSIC" 215 250 20 :light-gray)
@@ -41,4 +41,9 @@
 
   (jay/unload-music-stream music)
   (jay/close-audio-device)
-  (jay/close-window)))
+  (jay/close-window))
+
+(comment
+  (main)
+
+  )
