@@ -38,7 +38,7 @@
 
   (unless hit-obstacle
     (update (player :position) :y (fn [y] (+ y (* (player :speed) delta))))
-    (update (player :speed) #(- % (* G delta)))
+    (update (player :speed) |(- $ (* G delta)))
     (set (player :can-jump) false))
 
   player)
@@ -73,7 +73,7 @@
     (def delta (jay/get-frame-time))
     (set player (update-player player delta env-items))
 
-    (update (camera :zoom) #(+ % (* (jay/get-mouse-wheel-move) 0.05)))
+    (update (camera :zoom) |(+ $ (* (jay/get-mouse-wheel-move) 0.05)))
     (when (> (camera :zoom) 3.0) (set (camera :zoom) 3.0))
     (when (< (camera :zoom) 0.25) (set (camera :zoom) 0.25))
 
@@ -102,4 +102,4 @@
 
     (jay/end-drawing))
 
-  (jay/close-window)))
+  (jay/close-window))
