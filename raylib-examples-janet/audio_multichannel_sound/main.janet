@@ -13,7 +13,8 @@
 
   (while (not (jay/window-should-close))
     # Update
-    (when (jay/is-mouse-button-pressed :left) (jay/play-sound-multi fx-wav))
+    (when (jay/mouse-button-pressed? :left)
+      (jay/play-sound fx-wav))
 
     # Draw
     (jay/begin-drawing)
@@ -25,4 +26,4 @@
 
   (jay/unload-sound fx-wav)
   (jay/close-audio-device)
-  (jay/close-window)))
+  (jay/close-window))
