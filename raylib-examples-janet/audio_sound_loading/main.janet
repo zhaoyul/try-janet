@@ -13,7 +13,7 @@
 
   (while (not (jay/window-should-close))
     # Update
-    (when (jay/is-key-pressed :space) (jay/play-sound fx-wav))
+    (when (jay/key-pressed? :space) (jay/play-sound fx-wav))
 
     # Draw
     (jay/begin-drawing)
@@ -25,4 +25,4 @@
 
   (jay/unload-sound fx-wav)
   (jay/close-audio-device)
-  (jay/close-window)))
+  (jay/close-window))
