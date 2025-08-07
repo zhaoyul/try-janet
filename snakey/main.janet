@@ -86,8 +86,6 @@
          (|(apply jay/draw-rectangle $))))
   g)
 
-(var count 0)
-
 (defn move-one-step [snake]
   (let [[head & _] snake
         rest (drop -1 snake)
@@ -96,6 +94,7 @@
         rand-n   (xy->idx (get valid-ns (r/rand-index valid-ns)))]
     (set first-snake (array/concat @[rand-n] rest))))
 
+(var seconds 0)
 
 (defn main [& args]
 
@@ -121,8 +120,10 @@
              (map draw-grid>)
              )
 
-        (set count (inc count))
-        (when (zero? (mod count 6))
+        (print "loop")
+        (when (> (jay/get-time) seconds)
+          (print "inc.....")
+          (set seconds (+ seconds 0.1))
           (move-one-step first-snake))
 
         (jay/end-drawing))
