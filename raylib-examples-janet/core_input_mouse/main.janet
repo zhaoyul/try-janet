@@ -8,26 +8,14 @@
 
   (var ball-color :dark-blue)
 
-  (jay/set-target-fps 60)
-
+  (jay/set-target-fps 100)
   (while (not (jay/window-should-close))
     # Update
     (def ball-position (jay/get-mouse-position))
 
-    (if (jay/is-mouse-button-pressed :left)
-      (set ball-color :maroon)
-      (if (jay/is-mouse-button-pressed :middle)
-        (set ball-color :lime)
-        (if (jay/is-mouse-button-pressed :right)
-          (set ball-color :dark-blue)
-          (if (jay/is-mouse-button-pressed :side)
-            (set ball-color :purple)
-            (if (jay/is-mouse-button-pressed :extra)
-              (set ball-color :yellow)
-              (if (jay/is-mouse-button-pressed :forward)
-                (set ball-color :orange)
-                (if (jay/is-mouse-button-pressed :back)
-                  (set ball-color :beige))))))))
+    (cond (jay/mouse-button-pressed? :left)   (set ball-color :maroon)
+          (jay/mouse-button-pressed? :middle) (set ball-color :lime)
+          (jay/mouse-button-pressed? :right)  (set ball-color :dark-blue))
 
 
     # Draw
