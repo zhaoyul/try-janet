@@ -17,7 +17,7 @@
   (var current-gesture :none)
   (var last-gesture :none)
 
-  (jay/set-gestures-enabled #{:tap :double-tap :hold :drag :swipe-right :swipe-left :swipe-up :swipe-down :pinch-in :pinch-out})
+  (jay/set-gestures-enabled :tap :double-tap :hold :drag :swipe-right :swipe-left :swipe-up :swipe-down :pinch-in :pinch-out)
 
   (jay/set-target-fps 60)
 
@@ -49,7 +49,7 @@
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
 
-    (jay/draw-rectangle-rec touch-area :gray)
+    (jay/draw-rectangle-rec (values touch-area) :gray)
     (jay/draw-text "GESTURES TEST AREA" (+ (touch-area :x) 10) (+ (touch-area :y) 10) 20 :maroon)
 
     (for i 0 gestures-count
@@ -57,9 +57,10 @@
         (jay/draw-text (gestures i) 10 (+ 50 (* i 20)) 20 :maroon)
         (jay/draw-text (gestures i) 10 (+ 50 (* i 20)) 20 :light-gray)))
 
-    (if (jay/check-collision-point-rec touch-position touch-area)
-      (jay/draw-circle (touch-position :x) (touch-position :y) 30 :orange)
-      (jay/draw-circle (touch-position :x) (touch-position :y) 30 :dark-blue))
+    (let [[x y] touch-position]
+      (if (jay/check-collision-point-rec touch-position (values touch-area))
+          (jay/draw-circle (touch-position :x) (touch-position :y) 30 :orange)
+        (jay/draw-circle (math/round x) (math/round y) 30 :dark-blue)))
 
     (jay/end-drawing))
 
