@@ -12,16 +12,16 @@
 
   (while (not (jay/window-should-close))
     # Update
-    (when (jay/is-key-down :right) (update ball-position :x (fn [x] (+ x 2.0))))
-    (when (jay/is-key-down :left) (update ball-position :x (fn [x] (- x 2.0))))
-    (when (jay/is-key-down :up) (update ball-position :y (fn [y] (- y 2.0))))
-    (when (jay/is-key-down :down) (update ball-position :y (fn [y] (+ y 2.0))))
+    (when (jay/key-down? :right) (update ball-position :x (fn [x] (+ x 2.0))))
+    (when (jay/key-down? :left) (update ball-position :x (fn [x] (- x 2.0))))
+    (when (jay/key-down? :up) (update ball-position :y (fn [y] (- y 2.0))))
+    (when (jay/key-down? :down) (update ball-position :y (fn [y] (+ y 2.0))))
 
     # Draw
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
     (jay/draw-text "move the ball with arrow keys" 10 10 20 :dark-gray)
-    (jay/draw-circle-v ball-position 50.0 :maroon)
+    (jay/draw-circle-v (values ball-position) 50.0 :maroon)
     (jay/end-drawing))
 
   (jay/close-window))
