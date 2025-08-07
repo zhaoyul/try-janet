@@ -19,10 +19,10 @@
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
     (jay/draw-rectangle
-      (/ (- screen-width 300) 2)
-      (/ (- screen-height box-height) 2)
+      (math/round (/ (- screen-width 300) 2))
+      (math/round (/ (- screen-height box-height) 2))
       300
-      box-height
+      (math/round box-height)
       :maroon)
     (jay/draw-text "Use mouse wheel to change box height" 10 10 20 :gray)
     (jay/end-drawing))
