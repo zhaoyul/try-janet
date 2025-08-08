@@ -29,10 +29,12 @@
       (set (player :speed) 0.0)
       (set ((player :position) :y) (- ((item :rect) :y) ((item :rect) :height)))))
 
-  (unless hit-obstacle
-    (update (player :position) :y (fn [y] (+ y (* (player :speed) delta))))
-    (update player :speed |(- $ (* G delta)))
-    (set (player :can-jump) false))
+  (if hit-obstacle
+    (do
+      (update (player :position) :y (fn [y] (+ y (* (player :speed) delta))))
+      (update player :speed |(- $ (* G delta)))
+      (set (player :can-jump) false))
+      (set (player :can-jump) true))
 
   player)
 
@@ -66,8 +68,10 @@
     (set player (update-player player delta env-items))
 
     (update camera :zoom |(+ $ (* (jay/get-mouse-wheel-move) 0.05)))
-    (when (> (camera :zoom) 3.0) (set (camera :zoom) 3.0))
-    (when (< (camera :zoom) 0.25) (set (camera :zoom) 0.25))
+    (when (> (camera :zoom) 3.0)
+      (set (camera :zoom) 3.0))
+    (when (< (camera :zoom) 0.25)
+      (set (camera :zoom) 0.25))
 
     (when (jay/key-pressed? :r)
       (set (camera :zoom) 1.0)
@@ -85,6 +89,8 @@
 
     (def player-rect [((player :position) :x) ((player :position) :y)  20  40])
     (jay/draw-rectangle-rec player-rect :red)
+    (jay/end-mode-2d)
+
 
     (jay/draw-text "Controls:" 20 20 10 :black)
     (jay/draw-text "- Right/Left to move" 40 40 10 :dark-gray)
