@@ -22,7 +22,7 @@
   (var hit-obstacle false)
   (loop [item :in env-items]
     (def p-pos (player :position))
-    (def p-rect [(p-pos :x) (p-pos :y)  20  40])
+    (def p-rect [(p-pos :x) (p-pos :y) 20 40])
     (when (and (item :blocking)
                (jay/check-collision-recs p-rect (values (item :rect))))
       (set hit-obstacle true)
@@ -34,7 +34,7 @@
       (update (player :position) :y (fn [y] (+ y (* (player :speed) delta))))
       (update player :speed |(- $ (* G delta)))
       (set (player :can-jump) false))
-      (set (player :can-jump) true))
+    (set (player :can-jump) true))
 
   player)
 
@@ -54,11 +54,11 @@
       @{:rect @{:x 650 :y 300 :width 100 :height 10} :blocking true :color :gray}))
 
   (var camera
-       (jay/camera-2d
-         :target (values (player :position))
-         :offset [(/ screen-width 2.0)  (/ screen-height 2.0)]
-         :rotation 0.0
-         :zoom 1.0))
+    (jay/camera-2d
+      :target (values (player :position))
+      :offset [(/ screen-width 2.0) (/ screen-height 2.0)]
+      :rotation 0.0
+      :zoom 1.0))
 
   (jay/set-target-fps 60)
 
@@ -87,10 +87,9 @@
     (loop [item :in env-items]
       (jay/draw-rectangle-rec (values (item :rect)) (item :color)))
 
-    (def player-rect [((player :position) :x) ((player :position) :y)  20  40])
+    (def player-rect [((player :position) :x) ((player :position) :y) 20 40])
     (jay/draw-rectangle-rec player-rect :red)
     (jay/end-mode-2d)
-
 
     (jay/draw-text "Controls:" 20 20 10 :black)
     (jay/draw-text "- Right/Left to move" 40 40 10 :dark-gray)
