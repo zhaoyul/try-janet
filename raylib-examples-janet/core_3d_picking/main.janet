@@ -29,19 +29,25 @@
 
     (when (jay/mouse-button-pressed? :right)
       (if (jay/cursor-hidden?) (jay/enable-cursor) (jay/disable-cursor)))
-    (print "collision: " ;collision)
 
     (when (jay/mouse-button-pressed? :left)
       (if (zero? (first collision))
         (do
-          (set ray (jay/get-mouse-ray (jay/get-mouse-position) camera))
+          # Get the mouse ray
+          (def mouse-ray (jay/get-mouse-ray (jay/get-mouse-position) camera))
+          (put-in ray [0] (mouse-ray :position))
+          (put-in ray [1] (mouse-ray :direction))
+
+          # Check ray collision with bounding box
           (def min-vec @{:x (- (cube-position :x) (/ (cube-size :x) 2))
                          :y (- (cube-position :y) (/ (cube-size :y) 2))
                          :z (- (cube-position :z) (/ (cube-size :z) 2))})
           (def max-vec @{:x (+ (cube-position :x) (/ (cube-size :x) 2))
                          :y (+ (cube-position :y) (/ (cube-size :y) 2))
                          :z (+ (cube-position :z) (/ (cube-size :z) 2))})
-          (set collision (jay/get-ray-collision-box (values ray) [(values min-vec) (values max-vec)])))
+          (def collision-info (jay/get-ray-collision-box (values ray) [(values min-vec) (values max-vec)]))
+          (when (collision-info :hit)
+            (put-in collision [0] 1)))
         (put-in collision [0] 0)))
 
     # Draw
