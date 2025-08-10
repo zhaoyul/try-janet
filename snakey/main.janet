@@ -81,6 +81,17 @@
 
 (var first-snake (gen-snake 15))
 
+## 食物：生成与状态
+(defn gen-food [snake]
+  (let [occupied (s/new snake)
+        empties (->> (range grid-count)
+                     (filter |(not (s/has? occupied $))))]
+    (if (empty? empties)
+      -1
+      (get empties (r/rand-index empties)))))
+
+(var food-idx (gen-food first-snake))
+
 (def directions
   "方向"
   {:up [0 -1]
@@ -91,6 +102,7 @@
 (var current-direction (directions :right))
 (var game-state :playing)
 (var seconds 0)
+(var score 0)
 
 (defn handle-playing-input []
   (let [key-pressed? jay/key-pressed?]
@@ -126,6 +138,8 @@
   (set game-state :playing)
   (set current-direction (directions :right))
   (set first-snake (gen-snake 15))
+  (set food-idx (gen-food first-snake))
+  (set score 0)
   (set seconds (+ (jay/get-time) 0.2)))
 
 (defn move-one-step [snake]
@@ -138,7 +152,14 @@
     (if (or (not (valid-xy new-head-xy))
             (s/has? (s/new rest) new-head-idx))
       (set game-state :game-over)
-      (set first-snake (array/concat @[new-head-idx] rest)))))
+      (do
+        (if (= new-head-idx food-idx)
+          (do
+            # 吃到食物：增长，不丢尾
+            (set first-snake (array/concat @[new-head-idx] snake))
+            (set score (+ score 1))
+            (set food-idx (gen-food first-snake)))
+          (set first-snake (array/concat @[new-head-idx] rest)))))))
 
 (defn main [& args]
 
@@ -166,9 +187,19 @@
     (jay/begin-drawing)
     (jay/clear-background :ray-white)
 
+    # HUD: 显示得分
+    (jay/draw-text (string "得分: " score)
+                   (+ 8 margian) (+ 8 margian) 24 :dark-gray)
+
     (->> grids
          (map |(set-color :yellow $))
          (map draw-grid>))
+
+    # 绘制食物
+    (when (>= food-idx 0)
+      (->> (get grids food-idx)
+           (set-color :green)
+           (draw-grid>)))
 
     (->> first-snake
          (map |(get grids $))
