@@ -14,17 +14,22 @@
 (def grid-margian "格子之间" "格子之间的空白" 2)
 (def canvas-width "画布宽度" (- screen-width (* 2 margian)))
 (def canvas-height "画布高度" (- screen-height (* 2 margian)))
-(def grid-width "格子宽度" (-> canvas-width (/ grid-num)))
-(def grid-height "格子高度" (-> canvas-height (/ grid-num)))
+;; 使用方格：单一格子边长取画布较短边/格子数，并居中
+(def cell-size (math/floor (/ (min canvas-width canvas-height) grid-num)))
+(def grid-area-width (* cell-size grid-num))
+(def grid-area-height (* cell-size grid-num))
+(def origin-x (+ margian (math/floor (/ (- canvas-width grid-area-width) 2))))
+(def origin-y (+ margian (math/floor (/ (- canvas-height grid-area-height) 2))))
 (def grids "格子数据结构"
-  (map (fn [i] @{:index i
-                 :grid @[(round (+ margian (* (% i grid-num) grid-width)
-                                   grid-margian))
-                         (round (+ margian (* (math/floor (/ i grid-num)) grid-height)
-                                   grid-margian))
-                         (round (- grid-width grid-margian))
-                         (round (- grid-height grid-margian))
-                         :yellow]})
+  (map (fn [i]
+         (let [col (% i grid-num)
+               row (math/floor (/ i grid-num))]
+           @{:index i
+             :grid @[(round (+ origin-x (* col cell-size) grid-margian))
+                     (round (+ origin-y (* row cell-size) grid-margian))
+                     (round (- cell-size grid-margian))
+                     (round (- cell-size grid-margian))
+                     :yellow]}))
        (range (* grid-num grid-num))))
 
 (defn idx->xy [idx]
